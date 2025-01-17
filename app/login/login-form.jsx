@@ -1,53 +1,57 @@
 "use client";
 
 import { useState } from "react";
+import {loginUser} from "@/app/libs/apis/server";
 //Client component
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError]=useState("");
-  const [passwordError, setPasswordError]=useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  const validateForm = () =>{
-    if(email){
-      setEmailError("")
+  const validateForm = () => {
+    if (email) {
+      setEmailError("");
     }
 
-    if(password){
-      setPasswordError("")
+    if (password) {
+      setPasswordError("");
     }
 
-    if(!password && !email){
-      setEmailError("Email is required")
-      setPasswordError("Password is required")
+    if (!password && !email) {
+      setEmailError("Email is required");
+      setPasswordError("Password is required");
       return false;
     }
 
-    if(!email){
-      setEmailError("Email is required")
+    if (!email) {
+      setEmailError("Email is required");
       return false;
     }
 
-
-    if(!password){
-      setPasswordError("Password is required")
+    if (!password) {
+      setPasswordError("Password is required");
       return false;
     }
 
     return true;
-  }
+  };
 
-  const handleSubmit = (e) =>{
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     const isValid = validateForm();
+    if (isValid) {
+      //Login form data submission
+      const login = await loginUser({email:email, password:password});
 
-    //Login form data submission
-    console.log("Form Data:",{email: email,password: password});
-  }
+      console.log("LOGIN RESPONSE",login);
+    }
+  };
+
   return (
     <div className="w-[380px] mx-auto">
-      <div className="bg-white shadow-md border border-gray-200 rounded-lg p-4" >
+      <div className="bg-white shadow-md border border-gray-200 rounded-lg p-4">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/*Title*/}
           <h3 className="text-center text-xl font-semibold text-gray-900">
@@ -72,8 +76,9 @@ export default function LoginForm() {
               className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-1 focus:ring-offset-1 text-gray-900 focus:ring-blue-500 black w-full p-2.5"
               placeholder="yourname@example.com"
             />
-            {emailError && <div className="text-red-500 text-sm">{emailError}</div>}
-            
+            {emailError && (
+              <div className="text-red-500 text-sm">{emailError}</div>
+            )}
           </div>
 
           {/*Password*/}
@@ -95,7 +100,9 @@ export default function LoginForm() {
               placeholder="Password"
             />
 
-            {passwordError && <div className="text-red-500 text-sm">{passwordError}</div>}
+            {passwordError && (
+              <div className="text-red-500 text-sm">{passwordError}</div>
+            )}
           </div>
 
           <div className="flex items-center">
